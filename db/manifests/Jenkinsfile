@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Prendre le code') {
+            steps {
+                git 'https://github.com/famandao/ml_project.git' // Remplace par ton repo
+            }
+        }
+
+        stage('Construire Docker') {
+            steps {
+                sh 'docker build -t fama300/backend:latest .' // Remplace fama300 par ton compte Docker Hub
+            }
+        }
+
+        stage('Envoyer Docker') {
+            steps {
+                sh 'docker push fama300/backend:latest'  // Ton image va sur Docker Hub
+            }
+        }
+
+        stage('Déployer sur Kubernetes') {
+            steps {
+                sh 'kubectl apply -f backend/manifests/backend-deployment.yaml'
+            }
+        }
+    }
+}
